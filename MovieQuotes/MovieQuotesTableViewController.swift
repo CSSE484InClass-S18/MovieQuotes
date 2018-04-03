@@ -7,8 +7,11 @@
 //
 
 import UIKit
+import CoreData
 
 class MovieQuotesTableViewController: UITableViewController {
+
+  var context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
 
   let movieQuoteCellIdentifier = "MovieQuoteCell"
   let noMovieQuotesCellIdentifier = "NoMovieQuotesCell"
@@ -27,12 +30,11 @@ class MovieQuotesTableViewController: UITableViewController {
     navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add,
                                                         target: self,
                                                         action: #selector(showAddDialog))
-    movieQuotes.append(MovieQuote(quote: "I'll be back", movie: "The Terminator"))
-    movieQuotes.append(MovieQuote(quote: "Yo Adrian!", movie: "Rocky"))
   }
 
   override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
+    self.updateMovieQuoteArray()
     tableView.reloadData()
   }
 
@@ -49,26 +51,52 @@ class MovieQuotesTableViewController: UITableViewController {
     let cancelAction = UIAlertAction(title: "Cancel",
                                      style: UIAlertActionStyle.cancel,
                                      handler: nil)
-    let createQuoteAction = UIAlertAction(title: "Create Quote",
-                                     style: UIAlertActionStyle.default) {
-                                      (action) in
-                                      let quoteTextField = alertController.textFields![0]
-                                      let movieTextField = alertController.textFields![1]
-                                      print("quoteTextField = \(quoteTextField.text!)")
-                                      print("movieTextField = \(movieTextField.text!)")
-                                      let movieQuote = MovieQuote(quote: quoteTextField.text!,
-                                                                  movie: movieTextField.text!)
-                                      self.movieQuotes.insert(movieQuote, at: 0)
-                                      if self.movieQuotes.count == 1 {
-                                        self.tableView.reloadData()
-                                      } else {
-                                        self.tableView.insertRows(at: [IndexPath(row: 0, section: 0)],
-                                                                  with: UITableViewRowAnimation.top)
-                                      }
+    let createQuoteAction = UIAlertAction(
+      title: "Create Quote",
+      style: UIAlertActionStyle.default) {
+        (action) in
+        let quoteTextField = alertController.textFields![0]
+        let movieTextField = alertController.textFields![1]
+        print("quoteTextField = \(quoteTextField.text!)")
+        print("movieTextField = \(movieTextField.text!)")
+//        let movieQuote = MovieQuote(quote: quoteTextField.text!,
+//                                    movie: movieTextField.text!)
+//        self.movieQuotes.insert(movieQuote, at: 0)
+
+        // TODO: Come back here once we have access to the context
+        let newMovieQuote = MovieQuote(context: self.context)
+        newMovieQuote.quote = quoteTextField.text!
+        newMovieQuote.movie = movieTextField.text!
+        self.save()
+        self.updateMovieQuoteArray()
+
+        self.tableView.reloadData()
+//        if self.movieQuotes.count == 1 {
+//          self.tableView.reloadData()
+//        } else {
+//          self.tableView.insertRows(at: [IndexPath(row: 0, section: 0)],
+//                                    with: UITableViewRowAnimation.top)
+//        }
     }
     alertController.addAction(cancelAction)
     alertController.addAction(createQuoteAction)
     present(alertController, animated: true, completion: nil)
+  }
+
+  func save() {
+    (UIApplication.shared.delegate as! AppDelegate).saveContext()
+  }
+
+  func updateMovieQuoteArray() {
+    // Make a fetch request
+    // Execute the request in a try/catch block
+    let request: NSFetchRequest<MovieQuote> = MovieQuote.fetchRequest()
+
+    do {
+      movieQuotes = try context.fetch(request)
+    } catch {
+      fatalError("Unresolved Core Data error \(error)")
+    }
   }
 
   override func setEditing(_ editing: Bool, animated: Bool) {
