@@ -67,16 +67,17 @@ class MovieQuotesTableViewController: UITableViewController {
         let newMovieQuote = MovieQuote(context: self.context)
         newMovieQuote.quote = quoteTextField.text!
         newMovieQuote.movie = movieTextField.text!
+        newMovieQuote.created = Date()
         self.save()
         self.updateMovieQuoteArray()
 
-        self.tableView.reloadData()
-//        if self.movieQuotes.count == 1 {
-//          self.tableView.reloadData()
-//        } else {
-//          self.tableView.insertRows(at: [IndexPath(row: 0, section: 0)],
-//                                    with: UITableViewRowAnimation.top)
-//        }
+//        self.tableView.reloadData()
+        if self.movieQuotes.count == 1 {
+          self.tableView.reloadData()
+        } else {
+          self.tableView.insertRows(at: [IndexPath(row: 0, section: 0)],
+                                    with: UITableViewRowAnimation.top)
+        }
     }
     alertController.addAction(cancelAction)
     alertController.addAction(createQuoteAction)
@@ -91,6 +92,7 @@ class MovieQuotesTableViewController: UITableViewController {
     // Make a fetch request
     // Execute the request in a try/catch block
     let request: NSFetchRequest<MovieQuote> = MovieQuote.fetchRequest()
+    request.sortDescriptors = [NSSortDescriptor(key: "created", ascending: false)]
 
     do {
       movieQuotes = try context.fetch(request)
@@ -140,7 +142,12 @@ class MovieQuotesTableViewController: UITableViewController {
                           commit editingStyle: UITableViewCellEditingStyle,
                           forRowAt indexPath: IndexPath) {
     if editingStyle == .delete {
-      movieQuotes.remove(at: indexPath.row)
+
+      context.delete(movieQuotes[indexPath.row])
+      save()
+      updateMovieQuoteArray()
+
+//      movieQuotes.remove(at: indexPath.row)
       if movieQuotes.count == 0 {
         tableView.reloadData()
         self.setEditing(false, animated: true)

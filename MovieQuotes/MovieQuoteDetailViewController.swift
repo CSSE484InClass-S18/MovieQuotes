@@ -48,6 +48,9 @@ class MovieQuoteDetailViewController: UIViewController {
         self.movieQuote?.quote = quoteTextField.text!
         self.movieQuote?.movie = movieTextField.text!
         self.updateView()
+
+        // Save the context
+        (UIApplication.shared.delegate as! AppDelegate).saveContext()
     }
     alertController.addAction(cancelAction)
     alertController.addAction(createQuoteAction)
