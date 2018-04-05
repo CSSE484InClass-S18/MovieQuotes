@@ -11,7 +11,6 @@
 		FD0B2603206D394C00E37512 /* MovieQuote.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD0B2602206D394C00E37512 /* MovieQuote.swift */; };
 		FD69D7142073D0FE00E4736D /* MovieQuoteDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD69D7132073D0FE00E4736D /* MovieQuoteDetailViewController.swift */; };
 		FDD140B3206AA2DC00635468 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDD140B2206AA2DC00635468 /* AppDelegate.swift */; };
-		FDD140B6206AA2DC00635468 /* MovieQuotes.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = FDD140B4206AA2DC00635468 /* MovieQuotes.xcdatamodeld */; };
 		FDD140BD206AA2DC00635468 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FDD140BB206AA2DC00635468 /* Main.storyboard */; };
 		FDD140BF206AA2DC00635468 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FDD140BE206AA2DC00635468 /* Assets.xcassets */; };
 		FDD140C2206AA2DC00635468 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FDD140C0206AA2DC00635468 /* LaunchScreen.storyboard */; };
@@ -23,7 +22,6 @@
 		FD69D7132073D0FE00E4736D /* MovieQuoteDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieQuoteDetailViewController.swift; sourceTree = "<group>"; };
 		FDD140AF206AA2DC00635468 /* MovieQuotes.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MovieQuotes.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FDD140B2206AA2DC00635468 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		FDD140B5206AA2DC00635468 /* MovieQuotes.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = MovieQuotes.xcdatamodel; sourceTree = "<group>"; };
 		FDD140BC206AA2DC00635468 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		FDD140BE206AA2DC00635468 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		FDD140C1206AA2DC00635468 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -65,7 +63,6 @@
 				FDD140BE206AA2DC00635468 /* Assets.xcassets */,
 				FDD140C0206AA2DC00635468 /* LaunchScreen.storyboard */,
 				FDD140C3206AA2DC00635468 /* Info.plist */,
-				FDD140B4206AA2DC00635468 /* MovieQuotes.xcdatamodeld */,
 				FD0B2600206D367200E37512 /* MovieQuotesTableViewController.swift */,
 				FD0B2602206D394C00E37512 /* MovieQuote.swift */,
 				FD69D7132073D0FE00E4736D /* MovieQuoteDetailViewController.swift */,
@@ -149,7 +146,6 @@
 				FD69D7142073D0FE00E4736D /* MovieQuoteDetailViewController.swift in Sources */,
 				FD0B2603206D394C00E37512 /* MovieQuote.swift in Sources */,
 				FD0B2601206D367200E37512 /* MovieQuotesTableViewController.swift in Sources */,
-				FDD140B6206AA2DC00635468 /* MovieQuotes.xcdatamodeld in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -334,19 +330,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCVersionGroup section */
-		FDD140B4206AA2DC00635468 /* MovieQuotes.xcdatamodeld */ = {
-			isa = XCVersionGroup;
-			children = (
-				FDD140B5206AA2DC00635468 /* MovieQuotes.xcdatamodel */,
-			);
-			currentVersion = FDD140B5206AA2DC00635468 /* MovieQuotes.xcdatamodel */;
-			path = MovieQuotes.xcdatamodeld;
-			sourceTree = "<group>";
-			versionGroupType = wrapper.xcdatamodel;
-		};
-/* End XCVersionGroup section */
 	};
 	rootObject = FDD140A7206AA2DC00635468 /* Project object */;
 }
