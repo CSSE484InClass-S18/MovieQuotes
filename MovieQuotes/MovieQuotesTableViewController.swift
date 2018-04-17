@@ -7,8 +7,12 @@
 //
 
 import UIKit
+import Firebase
 
 class MovieQuotesTableViewController: UITableViewController {
+
+  var quotesRef: CollectionReference!
+  var quotesListener: ListenerRegistration!
 
   let movieQuoteCellIdentifier = "MovieQuoteCell"
   let noMovieQuotesCellIdentifier = "NoMovieQuotesCell"
@@ -17,23 +21,71 @@ class MovieQuotesTableViewController: UITableViewController {
 
   override func viewDidLoad() {
     super.viewDidLoad()
-
-    // Uncomment the following line to preserve selection between presentations
-    // self.clearsSelectionOnViewWillAppear = false
-
-    // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     self.navigationItem.leftBarButtonItem = self.editButtonItem
 
     navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add,
                                                         target: self,
                                                         action: #selector(showAddDialog))
-    movieQuotes.append(MovieQuote(quote: "I'll be back", movie: "The Terminator"))
-    movieQuotes.append(MovieQuote(quote: "Yo Adrian!", movie: "Rocky"))
+    //    movieQuotes.append(MovieQuote(quote: "I'll be back", movie: "The Terminator"))
+    //    movieQuotes.append(MovieQuote(quote: "Yo Adrian!", movie: "Rocky"))
+    quotesRef = Firestore.firestore().collection("quotes")
   }
 
   override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
-    tableView.reloadData()
+    //    tableView.reloadData()
+    quotesListener = quotesRef.order(by: "created", descending: true).limit(to: 50).addSnapshotListener({ (querySnapshot, error) in
+      guard let snapshot = querySnapshot else {
+        print("Error fetching quotes.  error: \(error!.localizedDescription)")
+        return
+      }
+      snapshot.documentChanges.forEach {(docChange) in
+        if (docChange.type == .added) {
+          print("New quote: \(docChange.document.data())")
+          self.quoteAdded(docChange.document)
+        } else if (docChange.type == .modified) {
+          print("Modified quote: \(docChange.document.data())")
+          self.quoteUpdated(docChange.document)
+        } else if (docChange.type == .removed) {
+          print("Removed quote: \(docChange.document.data())")
+          self.quoteRemoved(docChange.document)
+        }
+      }
+      self.movieQuotes.sort(by: { (mq1, mq2) -> Bool in
+        return mq1.created > mq2.created
+      })
+      self.tableView.reloadData()
+    })
+  }
+
+  func quoteAdded(_ document: DocumentSnapshot) {
+    let newMovieQuote = MovieQuote(documentSnapshot: document)
+    movieQuotes.append(newMovieQuote)
+  }
+
+  func quoteUpdated(_ document: DocumentSnapshot) {
+    let modifiedMovieQuote = MovieQuote(documentSnapshot: document)
+    for movieQuote in movieQuotes {
+      if (movieQuote.id == modifiedMovieQuote.id) {
+        movieQuote.quote = modifiedMovieQuote.quote
+        movieQuote.movie = modifiedMovieQuote.movie
+        break
+      }
+    }
+  }
+
+  func quoteRemoved(_ document: DocumentSnapshot) {
+    for i in 0..<movieQuotes.count {
+      if movieQuotes[i].id == document.documentID {
+        movieQuotes.remove(at: i)
+        break
+      }
+    }
+  }
+
+  override func viewWillDisappear(_ animated: Bool) {
+    super.viewWillDisappear(animated)
+    quotesListener.remove()
   }
 
   @objc func showAddDialog() {
@@ -49,22 +101,25 @@ class MovieQuotesTableViewController: UITableViewController {
     let cancelAction = UIAlertAction(title: "Cancel",
                                      style: UIAlertActionStyle.cancel,
                                      handler: nil)
-    let createQuoteAction = UIAlertAction(title: "Create Quote",
-                                     style: UIAlertActionStyle.default) {
-                                      (action) in
-                                      let quoteTextField = alertController.textFields![0]
-                                      let movieTextField = alertController.textFields![1]
-                                      print("quoteTextField = \(quoteTextField.text!)")
-                                      print("movieTextField = \(movieTextField.text!)")
-                                      let movieQuote = MovieQuote(quote: quoteTextField.text!,
-                                                                  movie: movieTextField.text!)
-                                      self.movieQuotes.insert(movieQuote, at: 0)
-                                      if self.movieQuotes.count == 1 {
-                                        self.tableView.reloadData()
-                                      } else {
-                                        self.tableView.insertRows(at: [IndexPath(row: 0, section: 0)],
-                                                                  with: UITableViewRowAnimation.top)
-                                      }
+    let createQuoteAction = UIAlertAction(
+      title: "Create Quote",
+      style: UIAlertActionStyle.default) {
+        (action) in
+        let quoteTextField = alertController.textFields![0]
+        let movieTextField = alertController.textFields![1]
+        print("quoteTextField = \(quoteTextField.text!)")
+        print("movieTextField = \(movieTextField.text!)")
+        let movieQuote = MovieQuote(quote: quoteTextField.text!,
+                                    movie: movieTextField.text!)
+
+        self.quotesRef.addDocument(data: movieQuote.data)
+//        self.movieQuotes.insert(movieQuote, at: 0)
+//        if self.movieQuotes.count == 1 {
+//          self.tableView.reloadData()
+//        } else {
+//          self.tableView.insertRows(at: [IndexPath(row: 0, section: 0)],
+//                                    with: UITableViewRowAnimation.top)
+//        }
     }
     alertController.addAction(cancelAction)
     alertController.addAction(createQuoteAction)
@@ -138,9 +193,9 @@ class MovieQuotesTableViewController: UITableViewController {
         (segue.destination as! MovieQuoteDetailViewController).movieQuote = movieQuotes[indexPath.row]
 
 
-//        if let detailVC = segue.destination as? MovieQuoteDetailViewController {
-//          detailVC.movieQuote = movieQuotes[indexPath.row]
-//        }
+        //        if let detailVC = segue.destination as? MovieQuoteDetailViewController {
+        //          detailVC.movieQuote = movieQuotes[indexPath.row]
+        //        }
 
       }
       
