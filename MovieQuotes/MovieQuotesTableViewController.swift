@@ -167,17 +167,17 @@ class MovieQuotesTableViewController: UITableViewController {
                           commit editingStyle: UITableViewCellEditingStyle,
                           forRowAt indexPath: IndexPath) {
     if editingStyle == .delete {
-      movieQuotes.remove(at: indexPath.row)
-      if movieQuotes.count == 0 {
-        tableView.reloadData()
-        self.setEditing(false, animated: true)
-      } else {
-        tableView.deleteRows(at: [indexPath], with: .fade)
-      }
+//      movieQuotes.remove(at: indexPath.row)
+//      if movieQuotes.count == 0 {
+//        tableView.reloadData()
+//        self.setEditing(false, animated: true)
+//      } else {
+//        tableView.deleteRows(at: [indexPath], with: .fade)
+//      }
+      let movieQuoteToDelete = movieQuotes[indexPath.row]
+      quotesRef.document(movieQuoteToDelete.id!).delete()
     }
   }
-
-
 
   // MARK: - Navigation
 
@@ -190,12 +190,11 @@ class MovieQuotesTableViewController: UITableViewController {
 
       if let indexPath = tableView.indexPathForSelectedRow {
 
-        (segue.destination as! MovieQuoteDetailViewController).movieQuote = movieQuotes[indexPath.row]
+        (segue.destination as! MovieQuoteDetailViewController).movieQuoteRef = quotesRef.document(movieQuotes[indexPath.row].id!)
 
-
-        //        if let detailVC = segue.destination as? MovieQuoteDetailViewController {
-        //          detailVC.movieQuote = movieQuotes[indexPath.row]
-        //        }
+//        if let detailVC = segue.destination as? MovieQuoteDetailViewController {
+//          detailVC.movieQuoteRef = quotesRef.document(movieQuotes[indexPath.row].id!)
+//        }
 
       }
       
