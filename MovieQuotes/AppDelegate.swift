@@ -8,6 +8,7 @@
 
 import UIKit
 import Firebase
+import Rosefire
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDelegate {

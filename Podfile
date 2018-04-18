@@ -9,4 +9,8 @@ target 'MovieQuotes' do
   pod 'Firebase/Core'
   pod 'Firebase/Firestore'
 
+# Temp test only!!!!
+  pod 'Rosefire', :git => 'https://ada.csse.rose-hulman.edu/rosefire/ios-sdk.git'
+
+
 end
